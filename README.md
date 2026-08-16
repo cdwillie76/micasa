@@ -49,6 +49,9 @@ micasa demo         # sample data
 micasa              # your house
 ```
 
+Prefer a browser? `micasa web` serves a local UI against the same database
+at `http://127.0.0.1:8734`.
+
 ## Documentation
 
 Full docs at [micasa.dev/docs](https://micasa.dev/docs/).
