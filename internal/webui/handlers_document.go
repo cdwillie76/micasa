@@ -181,7 +181,7 @@ func (s *Server) handleDocumentList(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	s.render(w, http.StatusOK, "document_list.html", documentListPageData{
-		pageData:       pageData{Title: "Documents", Nav: documentNav},
+		pageData:       pageData{Title: "Documents", Nav: documentNav, Wide: true},
 		Documents:      rows,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

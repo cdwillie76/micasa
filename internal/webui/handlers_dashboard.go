@@ -26,16 +26,24 @@ import (
 type dashboardPageData struct {
 	pageData
 
-	HousePill          string
 	HouseSummary       string
 	Overdue            []maintenanceUrgency
 	Upcoming           []maintenanceUrgency
 	ActiveProjects     []data.Project
-	OpenIncidents      []data.Incident
+	OpenIncidents      []incidentRow
 	ExpiringWarranties []warrantyStatus
 	YTDServiceSpend    string
 	TotalProjectSpend  string
 	Currency           string
+}
+
+// incidentRow pairs an Incident with whether its severity badge should use
+// the danger color, computed once here so the template stays a plain
+// conditional-free render instead of re-deriving urgency per row.
+type incidentRow struct {
+	data.Incident
+
+	Urgent bool
 }
 
 // houseSummaryLine mirrors internal/app/house.go's houseCollapsed layout
@@ -134,14 +142,9 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now()
-	housePill := house.Nickname
-	if housePill == "" {
-		housePill = "House"
-	}
 	page := dashboardPageData{
-		pageData:     pageData{Title: "Dashboard", Nav: "dashboard"},
+		pageData:     pageData{Title: "Dashboard", Nav: "dashboard", Wide: true},
 		Currency:     s.cur.Code(),
-		HousePill:    housePill,
 		HouseSummary: houseSummaryLine(house, s.units),
 	}
 
@@ -177,10 +180,16 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	page.OpenIncidents, err = s.store.ListOpenIncidents()
+	incidents, err := s.store.ListOpenIncidents()
 	if err != nil {
 		s.renderError(w, fmt.Errorf("load open incidents: %w", err))
 		return
+	}
+	for _, inc := range incidents {
+		page.OpenIncidents = append(page.OpenIncidents, incidentRow{
+			Incident: inc,
+			Urgent:   inc.Severity == data.IncidentSeverityUrgent,
+		})
 	}
 
 	appliances, err := s.store.ListExpiringWarranties(now, 30*24*time.Hour, 90*24*time.Hour)

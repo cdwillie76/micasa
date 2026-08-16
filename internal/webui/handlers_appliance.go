@@ -46,7 +46,7 @@ func (s *Server) handleApplianceList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, http.StatusOK, "appliance_list.html", applianceListPageData{
-		pageData:       pageData{Title: "Appliances", Nav: applianceNav},
+		pageData:       pageData{Title: "Appliances", Nav: applianceNav, Wide: true},
 		Appliances:     appliances,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

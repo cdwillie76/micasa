@@ -16,7 +16,7 @@
 
 {{if .Vendors}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Name</th>
@@ -32,20 +32,22 @@
     <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
       <td>{{.Name}}</td>
       <td>{{.ContactName}}</td>
-      <td>{{.Email}}</td>
+      <td class="truncate" title="{{.Email}}">{{.Email}}</td>
       <td>{{.Phone}}</td>
-      <td>{{if .Website}}<a href="{{.Website}}" target="_blank" rel="noopener noreferrer">{{.Website}}</a>{{end}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/vendors/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/vendors/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/vendors/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td class="truncate" title="{{.Website}}">{{if .Website}}<a href="{{.Website}}" target="_blank" rel="noopener noreferrer">{{.Website}}</a>{{end}}</td>
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/vendors/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/vendors/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/vendors/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

@@ -16,7 +16,7 @@
 
 {{if .Documents}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Title</th>
@@ -29,21 +29,23 @@
   <tbody>
     {{range .Documents}}
     <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
-      <td>{{.Title}}</td>
+      <td class="truncate" title="{{.Title}}">{{.Title}}</td>
       <td>{{.EntityLabel}}</td>
-      <td>{{if .FileName}}<a href="/documents/{{.ID}}/download">{{.FileName}}</a>{{end}}</td>
+      <td class="truncate" title="{{.FileName}}">{{if .FileName}}<a href="/documents/{{.ID}}/download">{{.FileName}}</a>{{end}}</td>
       <td>{{.Size}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/documents/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/documents/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/documents/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Title}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/documents/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/documents/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/documents/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Title}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

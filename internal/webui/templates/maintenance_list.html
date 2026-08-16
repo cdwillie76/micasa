@@ -16,7 +16,7 @@
 
 {{if .Items}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Name</th>
@@ -34,18 +34,20 @@
       <td>{{.Category.Name}}</td>
       <td>{{.Season}}</td>
       <td>{{if .IntervalMonths}}{{.IntervalMonths}} mo{{end}}</td>
-      <td>{{if .DueDate}}{{.DueDate.Format "Jan 2, 2006"}}{{end}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/maintenance/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/maintenance/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/maintenance/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td>{{if .DueDate}}{{.DueDate.Format "2006-01-02"}}{{end}}</td>
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/maintenance/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/maintenance/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/maintenance/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

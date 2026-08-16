@@ -64,7 +64,7 @@ func (s *Server) handleIncidentList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, http.StatusOK, "incident_list.html", incidentListPageData{
-		pageData:       pageData{Title: "Incidents", Nav: incidentNav},
+		pageData:       pageData{Title: "Incidents", Nav: incidentNav, Wide: true},
 		Incidents:      incidents,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

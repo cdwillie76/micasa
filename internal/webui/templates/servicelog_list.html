@@ -16,7 +16,7 @@
 
 {{if .Entries}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Maintenance Item</th>
@@ -30,18 +30,20 @@
     <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
       <td>{{.MaintenanceItem.Name}}</td>
       <td>{{.Vendor.Name}}</td>
-      <td>{{.ServicedAt.Format "Jan 2, 2006"}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/service-logs/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/service-logs/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/service-logs/{{.ID}}/delete" onsubmit="return confirm('Delete this service log entry for {{.MaintenanceItem.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td>{{.ServicedAt.Format "2006-01-02"}}</td>
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/service-logs/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/service-logs/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/service-logs/{{.ID}}/delete" onsubmit="return confirm('Delete this service log entry for {{.MaintenanceItem.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

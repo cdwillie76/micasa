@@ -49,7 +49,7 @@ func (s *Server) handleServiceLogList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, http.StatusOK, "servicelog_list.html", serviceLogListPageData{
-		pageData:       pageData{Title: "Service Logs", Nav: serviceLogNav},
+		pageData:       pageData{Title: "Service Logs", Nav: serviceLogNav, Wide: true},
 		Entries:        entries,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

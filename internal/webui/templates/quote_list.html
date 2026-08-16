@@ -16,7 +16,7 @@
 
 {{if .Quotes}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Project</th>
@@ -32,18 +32,20 @@
       <td>{{.Project.Title}}</td>
       <td>{{.Vendor.Name}}</td>
       <td>{{.Total}}</td>
-      <td>{{if .ReceivedDate}}{{.ReceivedDate.Format "Jan 2, 2006"}}{{end}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/quotes/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/quotes/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/quotes/{{.ID}}/delete" onsubmit="return confirm('Delete this quote from {{.Vendor.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td>{{if .ReceivedDate}}{{.ReceivedDate.Format "2006-01-02"}}{{end}}</td>
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/quotes/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/quotes/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/quotes/{{.ID}}/delete" onsubmit="return confirm('Delete this quote from {{.Vendor.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

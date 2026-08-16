@@ -9,7 +9,6 @@
   --accent-fg: #ffffff;
   --danger: #D55E00; /* Wong vermillion */
   --success: #009E73; /* Wong bluish green */
-  --mono: ui-monospace, "SF Mono", "Cascadia Code", "Menlo", "Consolas", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -99,41 +98,41 @@ main {
   padding: 1.5rem 1.25rem 4rem;
 }
 
+/* Table/grid pages (the dashboard's columns, entity lists) need more
+   room than the default measure gives -- form pages read better
+   narrower, so this is opt-in per page via pageData.Wide rather than
+   a blanket main override. */
+main.main-wide {
+  max-width: 68rem;
+}
+
 h1 { margin-top: 0; }
 
 .stats {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: 1.25rem;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  align-items: flex-end;
+  gap: 0.1rem;
 }
 
 .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
 .stat-value {
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-}
-
-.dash-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.dash-list li {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
 }
 
 .tag {
@@ -143,12 +142,68 @@ h1 { margin-top: 0; }
   border: 1px solid var(--border);
   border-radius: 0.25rem;
   padding: 0 0.35rem;
-  margin-left: 0.35rem;
+  white-space: nowrap;
 }
 
-.days-overdue { color: var(--danger); }
+.tag.danger { color: var(--danger); border-color: var(--danger); }
 
 .empty { color: var(--muted); }
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.dash-col {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
+  padding: 0.85rem 1rem;
+}
+
+.dash-col h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  margin: 0 0 0.6rem;
+}
+
+.dash-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dash-rows li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.dash-rows li:last-child { border-bottom: none; }
+
+.dash-rows a {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.dash-rows a:hover { color: var(--accent); text-decoration: underline; }
+
+.dash-badges {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.3rem;
+}
 
 .detail {
   display: grid;
@@ -250,6 +305,7 @@ button[type="submit"]:hover { filter: brightness(1.08); }
 .table-scroll {
   overflow-x: auto;
   margin-top: 1rem;
+  padding: 0 0.15rem 0.6rem 0;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -265,6 +321,33 @@ button[type="submit"]:hover { filter: brightness(1.08); }
   padding: 0.55rem 0.6rem;
   border-bottom: 1px solid var(--border);
   font-size: 0.9rem;
+}
+
+/* Long unbreakable strings (emails, URLs) would otherwise balloon their
+   column's auto-layout width and squeeze the actions column below what
+   the Edit/Delete controls need. Cap and ellipsis-truncate instead --
+   the full value is still in the link's href / title attribute where
+   applicable. */
+.truncate {
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The actions column (Edit/Delete) has no text content to size itself
+   by, so without this it gets squeezed by the other auto-sized columns
+   and the Delete button clips at the table's right edge. "width: 1%" is
+   only a soft proportional hint in the browser's table auto-layout
+   algorithm, though -- sort.js reordering rows via appendChild triggers
+   a reflow that can redistribute column widths differently than the
+   initial paint, squeezing this column again even with the hint in
+   place. min-width is a hard floor that survives any such reflow. */
+.entity-table th:last-child,
+.entity-table td:last-child {
+  width: 1%;
+  min-width: 8rem;
+  white-space: nowrap;
 }
 
 .entity-table tbody tr:hover {
@@ -336,43 +419,28 @@ form .radio-label input:not([type="radio"]) {
 }
 
 .house-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
+  display: block;
   border: 1px solid var(--border);
   border-radius: 0.4rem;
   padding: 0.6rem 0.9rem;
   margin-bottom: 1.5rem;
-  font-family: var(--mono);
   font-size: 0.9rem;
-}
-
-.house-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  background: var(--accent);
-  color: var(--accent-fg);
-  font-weight: 700;
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.25rem;
+  color: var(--muted);
   text-decoration: none;
 }
 
-.house-pill::after { content: "\203A"; opacity: 0.7; }
+.house-header:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
 
-.house-summary { color: var(--muted); }
-
-.dash-section { margin-bottom: 1.75rem; }
-
-.dash-section h2 {
-  font-size: 0.95rem;
-  margin-bottom: 0.4rem;
+.house-header::after {
+  content: "\203A";
+  opacity: 0.6;
+  margin-left: 0.4rem;
 }
 
 table.sortable {
-  font-family: var(--mono);
   font-size: 0.85rem;
 }
 

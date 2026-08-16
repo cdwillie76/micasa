@@ -62,7 +62,7 @@ func (s *Server) handleQuoteList(w http.ResponseWriter, r *http.Request) {
 		rows[i] = quoteRow{Quote: q, Total: s.cur.FormatCents(q.TotalCents)}
 	}
 	s.render(w, http.StatusOK, "quote_list.html", quoteListPageData{
-		pageData:       pageData{Title: "Quotes", Nav: quoteNav},
+		pageData:       pageData{Title: "Quotes", Nav: quoteNav, Wide: true},
 		Quotes:         rows,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

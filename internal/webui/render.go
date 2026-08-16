@@ -11,10 +11,16 @@ import (
 )
 
 // pageData is embedded in every page's template data to drive the shared
-// layout (nav highlighting, page title).
+// layout (nav highlighting, page title, container width).
 type pageData struct {
 	Title string
 	Nav   string // matches a nav item's identifier for the active-link style
+
+	// Wide widens the page container for table/grid-heavy pages (entity
+	// lists, the dashboard). List and form pages share the same Nav value,
+	// so this can't be derived from Nav -- it's set explicitly by each
+	// handler that renders a table.
+	Wide bool
 }
 
 // render executes the named page template into a buffer first, so a

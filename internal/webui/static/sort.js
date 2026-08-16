@@ -12,16 +12,32 @@
     return cell ? cell.textContent.trim() : "";
   }
 
-  // numericValue returns a number only when the ENTIRE cell (after
-  // stripping "$", "," and one trailing unit suffix) is numeric --
+  // byteUnits maps humanize.IBytes suffixes to their power-of-1024
+  // multiplier, so "1.2 MiB" sorts after "900 KiB" instead of comparing
+  // 1.2 to 900 as if they were the same unit.
+  var byteUnits = { b: 0, kib: 1, mib: 2, gib: 3, tib: 4, pib: 5 };
+
+  // numericValue returns a number only when the ENTIRE cell is numeric --
   // never a prefix match. A prefix match would silently misparse an ISO
   // date like "2026-08-16" as the number 2026, breaking its sort order
   // against other dates in the same year. Values that don't fully match
   // fall through to string comparison, where ISO dates already sort
   // correctly on their own.
   function numericValue(text) {
-    var cleaned = text
-      .trim()
+    var trimmed = text.trim();
+    var byteMatch = trimmed.match(/^(-?[\d.]+)\s*(b|kib|mib|gib|tib|pib)$/i);
+    var amount = byteMatch ? parseFloat(byteMatch[1]) : null;
+
+    if (byteMatch) {
+      return Number.isNaN(amount)
+        ? null
+        : amount * 1024 ** byteUnits[byteMatch[2].toLowerCase()];
+    }
+
+    // Otherwise strip "$", "," and one trailing unit suffix, assuming the
+    // unit is the same for every row in the column (true for money,
+    // interval-in-months, area, and bed/bath counts as currently rendered).
+    var cleaned = trimmed
       .replace(/^\$/, "")
       .replace(/,/g, "")
       .replace(/\s*(k|mo|ft²|m²|ba|bd|%)$/i, "");

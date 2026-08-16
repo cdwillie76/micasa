@@ -43,7 +43,7 @@ func (s *Server) handleVendorList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, http.StatusOK, "vendor_list.html", vendorListPageData{
-		pageData:       pageData{Title: "Vendors", Nav: vendorNav},
+		pageData:       pageData{Title: "Vendors", Nav: vendorNav, Wide: true},
 		Vendors:        vendors,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

@@ -64,7 +64,7 @@ func (s *Server) handleMaintenanceList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, http.StatusOK, "maintenance_list.html", maintenanceListPageData{
-		pageData:       pageData{Title: "Maintenance", Nav: maintenanceNav},
+		pageData:       pageData{Title: "Maintenance", Nav: maintenanceNav, Wide: true},
 		Items:          items,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

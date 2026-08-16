@@ -74,7 +74,7 @@ func (s *Server) handleProjectList(w http.ResponseWriter, r *http.Request) {
 		rows[i] = projectRow{Project: p, Budget: s.cur.FormatOptionalCents(p.BudgetCents)}
 	}
 	s.render(w, http.StatusOK, "project_list.html", projectListPageData{
-		pageData:       pageData{Title: "Projects", Nav: projectNav},
+		pageData:       pageData{Title: "Projects", Nav: projectNav, Wide: true},
 		Projects:       rows,
 		IncludeDeleted: includeDeleted,
 		Error:          r.URL.Query().Get("error"),

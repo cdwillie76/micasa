@@ -16,7 +16,7 @@
 
 {{if .Projects}}
 <div class="table-scroll">
-<table class="entity-table">
+<table class="entity-table sortable">
   <thead>
     <tr>
       <th>Title</th>
@@ -31,17 +31,19 @@
       <td>{{.Title}}</td>
       <td><span class="tag">{{.Status}}</span></td>
       <td>{{.Budget}}</td>
-      <td class="row-actions">
-        {{if .DeletedAt.Valid}}
-          <form method="post" action="/projects/{{.ID}}/restore">
-            <button type="submit">Restore</button>
-          </form>
-        {{else}}
-          <a href="/projects/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/projects/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Title}}? You can restore it later from &quot;Show deleted&quot;.')">
-            <button type="submit" class="danger">Delete</button>
-          </form>
-        {{end}}
+      <td>
+        <div class="row-actions">
+          {{if .DeletedAt.Valid}}
+            <form method="post" action="/projects/{{.ID}}/restore">
+              <button type="submit">Restore</button>
+            </form>
+          {{else}}
+            <a href="/projects/{{.ID}}/edit">Edit</a>
+            <form method="post" action="/projects/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Title}}? You can restore it later from &quot;Show deleted&quot;.')">
+              <button type="submit" class="danger">Delete</button>
+            </form>
+          {{end}}
+        </div>
       </td>
     </tr>
     {{end}}

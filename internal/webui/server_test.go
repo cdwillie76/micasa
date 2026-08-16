@@ -144,21 +144,11 @@ func TestHandleDashboard_RendersHouseHeader(t *testing.T) {
 
 	require.Equal(t, http.StatusOK, rec.Code)
 	body := rec.Body.String()
-	require.Contains(t, body, `<a class="house-pill" href="/house">The Homestead</a>`)
 	require.Contains(
-		t, body,
-		"123 Main St · Springfield, IL · 3bd / 2.5ba · 1,800 ft² · 1998",
+		t,
+		body,
+		`<a class="house-header" href="/house">123 Main St · Springfield, IL · 3bd / 2.5ba · 1,800 ft² · 1998</a>`,
 	)
-}
-
-func TestHandleDashboard_HousePillFallsBackToHouseWhenNoNickname(t *testing.T) {
-	srv := newTestServer(t)
-	require.NoError(t, srv.store.CreateHouseProfile(data.HouseProfile{City: "Springfield"}))
-
-	rec := do(t, srv, http.MethodGet, "/", nil)
-
-	require.Equal(t, http.StatusOK, rec.Code)
-	require.Contains(t, rec.Body.String(), `<a class="house-pill" href="/house">House</a>`)
 }
 
 func TestHandleHouseView_RedirectsToEditWhenNoHouse(t *testing.T) {
@@ -282,7 +272,58 @@ func TestHandleDashboard_RendersOverdueAndUpcomingMaintenance(t *testing.T) {
 		`<a href="/maintenance/`+overdueItem.ID+`/edit">Overdue Gutter Cleaning</a>`,
 		"dashboard rows must drill down to the item's edit page",
 	)
-	require.Contains(t, body, `<table class="entity-table sortable">`)
+	require.Contains(t, body, `<div class="dash-col">`)
+}
+
+func TestHandleDashboard_ColumnsOrderedAndBadgedCorrectly(t *testing.T) {
+	srv := newTestServer(t)
+	require.NoError(t, srv.store.CreateHouseProfile(data.HouseProfile{Nickname: "Test House"}))
+
+	require.NoError(t, srv.store.CreateIncident(&data.Incident{
+		Title: "Urgent Incident", Status: data.IncidentStatusOpen,
+		Severity: data.IncidentSeverityUrgent, DateNoticed: mustParseDate(t, "2026-01-01"),
+	}))
+	require.NoError(t, srv.store.CreateIncident(&data.Incident{
+		Title: "Calm Incident", Status: data.IncidentStatusOpen,
+		Severity: data.IncidentSeverityWhenever, DateNoticed: mustParseDate(t, "2026-01-01"),
+	}))
+
+	categoryID := firstMaintenanceCategoryID(t, srv)
+	overdueDue := time.Now().AddDate(0, 0, -5)
+	require.NoError(t, srv.store.CreateMaintenance(&data.MaintenanceItem{
+		Name: "Overdue Item", CategoryID: categoryID, DueDate: &overdueDue,
+	}))
+	upcomingDue := time.Now().AddDate(0, 0, 5)
+	require.NoError(t, srv.store.CreateMaintenance(&data.MaintenanceItem{
+		Name: "Upcoming Item", CategoryID: categoryID, DueDate: &upcomingDue,
+	}))
+
+	project := data.Project{Title: "An Active Project", ProjectTypeID: firstProjectTypeID(t, srv)}
+	require.NoError(t, srv.store.CreateProject(&project))
+	require.NoError(t, srv.store.UpdateProject(data.Project{
+		ID: project.ID, Title: project.Title, ProjectTypeID: project.ProjectTypeID,
+		Status: data.ProjectStatusInProgress,
+	}))
+
+	rec := do(t, srv, http.MethodGet, "/", nil)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+	body := rec.Body.String()
+
+	incidentsIdx := strings.Index(body, "Open Incidents")
+	overdueIdx := strings.Index(body, "Overdue Maintenance")
+	projectsIdx := strings.Index(body, "Active Projects")
+	require.True(
+		t,
+		incidentsIdx >= 0 && overdueIdx >= 0 && projectsIdx >= 0,
+		"all three columns must render",
+	)
+	require.Less(t, incidentsIdx, overdueIdx, "Open Incidents must come before Overdue Maintenance")
+	require.Less(t, overdueIdx, projectsIdx, "Overdue Maintenance must come before Active Projects")
+
+	require.Contains(t, body, `<span class="tag danger">urgent</span>`)
+	require.Contains(t, body, `<span class="tag">whenever</span>`)
+	require.NotContains(t, body, `<span class="tag danger">whenever</span>`)
 }
 
 func TestHandleDashboard_StoreErrorRendersServerError(t *testing.T) {
