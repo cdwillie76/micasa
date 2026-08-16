@@ -93,6 +93,9 @@ func runWeb(w io.Writer, opts *webOpts) error {
 	if err != nil {
 		return fmt.Errorf("resolve unit system: %w", err)
 	}
+	if err := store.SetMaxDocumentSize(cfg.Documents.MaxFileSize.Bytes()); err != nil {
+		return fmt.Errorf("configure document size limit: %w", err)
+	}
 
 	srv, err := webui.NewServer(store, store.Currency(), units)
 	if err != nil {

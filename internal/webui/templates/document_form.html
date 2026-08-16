@@ -1,0 +1,30 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Document{{else}}Edit Document{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" enctype="multipart/form-data"
+      action="{{if .IsNew}}/documents{{else}}/documents/{{.Document.ID}}{{end}}">
+  <label>Title <input name="title" value="{{.Document.Title}}" placeholder="Defaults to the file name"></label>
+
+  <label>Entity
+    <select name="entity">
+      <option value="">-- none --</option>
+      {{range .EntityOptions}}
+      <option value="{{.Kind}}|{{.ID}}" {{if eq (printf "%s|%s" .Kind .ID) $.SelectedEntity}}selected{{end}}>{{.Label}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>
+    {{if .IsNew}}File (max {{.MaxUploadSize}}){{else}}Replace file (max {{.MaxUploadSize}}, leave blank to keep the current file){{end}}
+    <input type="file" name="file" {{if .IsNew}}required{{end}}>
+  </label>
+  {{if not .IsNew}}{{if .Document.FileName}}<p>Current file: <a href="/documents/{{.Document.ID}}/download">{{.Document.FileName}}</a></p>{{end}}{{end}}
+
+  <label>Notes <textarea name="notes" rows="3">{{.Document.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/documents">Cancel</a>
+</form>
+{{end}}

@@ -4,7 +4,9 @@
 package webui
 
 import (
+	"bytes"
 	"context"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -74,6 +76,39 @@ func do(
 	} else {
 		req = httptest.NewRequestWithContext(t.Context(), method, target, nil)
 	}
+	rec := httptest.NewRecorder()
+	srv.ServeHTTP(rec, req)
+	return rec
+}
+
+// doMultipart POSTs a multipart/form-data request (file upload) through the
+// server, exactly as a browser submitting <form method="post" enctype=
+// "multipart/form-data"> would. fileField may be "" to submit the form with
+// no file.
+func doMultipart(
+	t *testing.T,
+	srv *Server,
+	target string,
+	fields map[string]string,
+	fileField, fileName string,
+	fileContent []byte,
+) *httptest.ResponseRecorder {
+	t.Helper()
+	var body bytes.Buffer
+	mw := multipart.NewWriter(&body)
+	for k, v := range fields {
+		require.NoError(t, mw.WriteField(k, v))
+	}
+	if fileField != "" {
+		fw, err := mw.CreateFormFile(fileField, fileName)
+		require.NoError(t, err)
+		_, err = fw.Write(fileContent)
+		require.NoError(t, err)
+	}
+	require.NoError(t, mw.Close())
+
+	req := httptest.NewRequestWithContext(t.Context(), http.MethodPost, target, &body)
+	req.Header.Set("Content-Type", mw.FormDataContentType())
 	rec := httptest.NewRecorder()
 	srv.ServeHTTP(rec, req)
 	return rec

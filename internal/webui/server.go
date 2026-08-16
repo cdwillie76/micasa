@@ -112,6 +112,15 @@ func (s *Server) routes() {
 	mux.HandleFunc("POST /service-logs/{id}/delete", s.handleServiceLogDelete)
 	mux.HandleFunc("POST /service-logs/{id}/restore", s.handleServiceLogRestore)
 
+	mux.HandleFunc("GET /documents", s.handleDocumentList)
+	mux.HandleFunc("GET /documents/new", s.handleDocumentNewForm)
+	mux.HandleFunc("POST /documents", s.handleDocumentCreate)
+	mux.HandleFunc("GET /documents/{id}/edit", s.handleDocumentEditForm)
+	mux.HandleFunc("POST /documents/{id}", s.handleDocumentUpdate)
+	mux.HandleFunc("POST /documents/{id}/delete", s.handleDocumentDelete)
+	mux.HandleFunc("POST /documents/{id}/restore", s.handleDocumentRestore)
+	mux.HandleFunc("GET /documents/{id}/download", s.handleDocumentDownload)
+
 	s.mux = mux
 }
 

@@ -38,6 +38,7 @@ func loadTemplates() (*templates, error) {
 		"maintenance_list.html", "maintenance_form.html",
 		"quote_list.html", "quote_form.html",
 		"servicelog_list.html", "servicelog_form.html",
+		"document_list.html", "document_form.html",
 	}
 	pages := make(map[string]*template.Template, len(pageNames))
 	for _, name := range pageNames {
