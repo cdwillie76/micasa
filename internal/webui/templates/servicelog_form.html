@@ -1,0 +1,31 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Service Log Entry{{else}}Edit Service Log Entry{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/service-logs{{else}}/service-logs/{{.Entry.ID}}{{end}}">
+  <label>Maintenance item
+    <select name="maintenance_item_id">
+      {{range .MaintenanceItems}}
+      <option value="{{.ID}}" {{if eq .ID $.SelectedMaintItem}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Vendor
+    <select name="vendor_id">
+      <option value="">-- none --</option>
+      {{range .Vendors}}
+      <option value="{{.ID}}" {{if eq .ID $.SelectedVendor}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Serviced at <input name="serviced_at" placeholder="YYYY-MM-DD" value="{{.ServicedAt}}" required></label>
+  <label>Cost <input name="cost" value="{{.Cost}}"></label>
+  <label>Notes <textarea name="notes" rows="3">{{.Entry.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/service-logs">Cancel</a>
+</form>
+{{end}}

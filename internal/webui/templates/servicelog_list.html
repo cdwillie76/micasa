@@ -1,0 +1,52 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>Service Logs</h1>
+  <a class="button" href="/service-logs/new">Add Service Log Entry</a>
+</div>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<p>
+  {{if .IncludeDeleted}}
+    <a href="/service-logs">Hide deleted</a>
+  {{else}}
+    <a href="/service-logs?deleted=1">Show deleted</a>
+  {{end}}
+</p>
+
+{{if .Entries}}
+<table class="entity-table">
+  <thead>
+    <tr>
+      <th>Maintenance Item</th>
+      <th>Vendor</th>
+      <th>Serviced At</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Entries}}
+    <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
+      <td>{{.MaintenanceItem.Name}}</td>
+      <td>{{.Vendor.Name}}</td>
+      <td>{{.ServicedAt.Format "Jan 2, 2006"}}</td>
+      <td class="row-actions">
+        {{if .DeletedAt.Valid}}
+          <form method="post" action="/service-logs/{{.ID}}/restore">
+            <button type="submit">Restore</button>
+          </form>
+        {{else}}
+          <a href="/service-logs/{{.ID}}/edit">Edit</a>
+          <form method="post" action="/service-logs/{{.ID}}/delete">
+            <button type="submit" class="danger">Delete</button>
+          </form>
+        {{end}}
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="empty">No service log entries yet.</p>
+{{end}}
+{{end}}

@@ -1,0 +1,56 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Incident{{else}}Edit Incident{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/incidents{{else}}/incidents/{{.Incident.ID}}{{end}}">
+  <label>Title <input name="title" value="{{.Incident.Title}}" required></label>
+
+  {{if not .IsNew}}
+  <label>Status
+    <select name="status">
+      {{range .Statuses}}
+      <option value="{{.}}" {{if eq . $.Incident.Status}}selected{{end}}>{{.}}</option>
+      {{end}}
+    </select>
+  </label>
+  {{end}}
+
+  <label>Severity
+    <select name="severity">
+      {{range .Severities}}
+      <option value="{{.}}" {{if eq . $.Incident.Severity}}selected{{end}}>{{.}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Date noticed <input name="date_noticed" placeholder="YYYY-MM-DD" value="{{.DateNoticed}}" required></label>
+  <label>Date resolved <input name="date_resolved" placeholder="YYYY-MM-DD" value="{{.DateResolved}}"></label>
+  <label>Location <input name="location" value="{{.Incident.Location}}"></label>
+
+  <label>Appliance
+    <select name="appliance_id">
+      <option value="">-- none --</option>
+      {{range .Appliances}}
+      <option value="{{.ID}}" {{if eq .ID $.SelectedAppliance}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Vendor
+    <select name="vendor_id">
+      <option value="">-- none --</option>
+      {{range .Vendors}}
+      <option value="{{.ID}}" {{if eq .ID $.SelectedVendor}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Cost <input name="cost" value="{{.Cost}}"></label>
+  <label>Description <textarea name="description" rows="3">{{.Incident.Description}}</textarea></label>
+  <label>Notes <textarea name="notes" rows="3">{{.Incident.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/incidents">Cancel</a>
+</form>
+{{end}}

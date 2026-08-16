@@ -64,6 +64,54 @@ func (s *Server) routes() {
 	mux.HandleFunc("POST /vendors/{id}/delete", s.handleVendorDelete)
 	mux.HandleFunc("POST /vendors/{id}/restore", s.handleVendorRestore)
 
+	mux.HandleFunc("GET /appliances", s.handleApplianceList)
+	mux.HandleFunc("GET /appliances/new", s.handleApplianceNewForm)
+	mux.HandleFunc("POST /appliances", s.handleApplianceCreate)
+	mux.HandleFunc("GET /appliances/{id}/edit", s.handleApplianceEditForm)
+	mux.HandleFunc("POST /appliances/{id}", s.handleApplianceUpdate)
+	mux.HandleFunc("POST /appliances/{id}/delete", s.handleApplianceDelete)
+	mux.HandleFunc("POST /appliances/{id}/restore", s.handleApplianceRestore)
+
+	mux.HandleFunc("GET /projects", s.handleProjectList)
+	mux.HandleFunc("GET /projects/new", s.handleProjectNewForm)
+	mux.HandleFunc("POST /projects", s.handleProjectCreate)
+	mux.HandleFunc("GET /projects/{id}/edit", s.handleProjectEditForm)
+	mux.HandleFunc("POST /projects/{id}", s.handleProjectUpdate)
+	mux.HandleFunc("POST /projects/{id}/delete", s.handleProjectDelete)
+	mux.HandleFunc("POST /projects/{id}/restore", s.handleProjectRestore)
+
+	mux.HandleFunc("GET /incidents", s.handleIncidentList)
+	mux.HandleFunc("GET /incidents/new", s.handleIncidentNewForm)
+	mux.HandleFunc("POST /incidents", s.handleIncidentCreate)
+	mux.HandleFunc("GET /incidents/{id}/edit", s.handleIncidentEditForm)
+	mux.HandleFunc("POST /incidents/{id}", s.handleIncidentUpdate)
+	mux.HandleFunc("POST /incidents/{id}/delete", s.handleIncidentDelete)
+	mux.HandleFunc("POST /incidents/{id}/restore", s.handleIncidentRestore)
+
+	mux.HandleFunc("GET /maintenance", s.handleMaintenanceList)
+	mux.HandleFunc("GET /maintenance/new", s.handleMaintenanceNewForm)
+	mux.HandleFunc("POST /maintenance", s.handleMaintenanceCreate)
+	mux.HandleFunc("GET /maintenance/{id}/edit", s.handleMaintenanceEditForm)
+	mux.HandleFunc("POST /maintenance/{id}", s.handleMaintenanceUpdate)
+	mux.HandleFunc("POST /maintenance/{id}/delete", s.handleMaintenanceDelete)
+	mux.HandleFunc("POST /maintenance/{id}/restore", s.handleMaintenanceRestore)
+
+	mux.HandleFunc("GET /quotes", s.handleQuoteList)
+	mux.HandleFunc("GET /quotes/new", s.handleQuoteNewForm)
+	mux.HandleFunc("POST /quotes", s.handleQuoteCreate)
+	mux.HandleFunc("GET /quotes/{id}/edit", s.handleQuoteEditForm)
+	mux.HandleFunc("POST /quotes/{id}", s.handleQuoteUpdate)
+	mux.HandleFunc("POST /quotes/{id}/delete", s.handleQuoteDelete)
+	mux.HandleFunc("POST /quotes/{id}/restore", s.handleQuoteRestore)
+
+	mux.HandleFunc("GET /service-logs", s.handleServiceLogList)
+	mux.HandleFunc("GET /service-logs/new", s.handleServiceLogNewForm)
+	mux.HandleFunc("POST /service-logs", s.handleServiceLogCreate)
+	mux.HandleFunc("GET /service-logs/{id}/edit", s.handleServiceLogEditForm)
+	mux.HandleFunc("POST /service-logs/{id}", s.handleServiceLogUpdate)
+	mux.HandleFunc("POST /service-logs/{id}/delete", s.handleServiceLogDelete)
+	mux.HandleFunc("POST /service-logs/{id}/restore", s.handleServiceLogRestore)
+
 	s.mux = mux
 }
 

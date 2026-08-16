@@ -1,0 +1,54 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>Quotes</h1>
+  <a class="button" href="/quotes/new">Add Quote</a>
+</div>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<p>
+  {{if .IncludeDeleted}}
+    <a href="/quotes">Hide deleted</a>
+  {{else}}
+    <a href="/quotes?deleted=1">Show deleted</a>
+  {{end}}
+</p>
+
+{{if .Quotes}}
+<table class="entity-table">
+  <thead>
+    <tr>
+      <th>Project</th>
+      <th>Vendor</th>
+      <th>Total</th>
+      <th>Received</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Quotes}}
+    <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
+      <td>{{.Project.Title}}</td>
+      <td>{{.Vendor.Name}}</td>
+      <td>{{.Total}}</td>
+      <td>{{if .ReceivedDate}}{{.ReceivedDate.Format "Jan 2, 2006"}}{{end}}</td>
+      <td class="row-actions">
+        {{if .DeletedAt.Valid}}
+          <form method="post" action="/quotes/{{.ID}}/restore">
+            <button type="submit">Restore</button>
+          </form>
+        {{else}}
+          <a href="/quotes/{{.ID}}/edit">Edit</a>
+          <form method="post" action="/quotes/{{.ID}}/delete">
+            <button type="submit" class="danger">Delete</button>
+          </form>
+        {{end}}
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="empty">No quotes yet.</p>
+{{end}}
+{{end}}

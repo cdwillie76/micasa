@@ -37,6 +37,24 @@ func newTestServer(t *testing.T) *Server {
 	return srv
 }
 
+// firstProjectTypeID returns the ID of a seeded ProjectType, for tests that
+// need a valid Project.ProjectTypeID (a required, non-nullable FK).
+func firstProjectTypeID(t *testing.T, srv *Server) string {
+	t.Helper()
+	types, err := srv.store.ProjectTypes()
+	require.NoError(t, err)
+	require.NotEmpty(t, types)
+	return types[0].ID
+}
+
+// mustParseDate parses a YYYY-MM-DD literal for test fixtures.
+func mustParseDate(t *testing.T, s string) time.Time {
+	t.Helper()
+	tm, err := time.Parse("2006-01-02", s)
+	require.NoError(t, err)
+	return tm
+}
+
 // do drives a request through the server exactly as a browser would --
 // this package has no TabHandler-style internal API to call into directly,
 // so every test exercises the real HTTP request/response cycle.

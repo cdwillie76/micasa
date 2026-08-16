@@ -1,0 +1,59 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Maintenance Item{{else}}Edit Maintenance Item{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/maintenance{{else}}/maintenance/{{.Item.ID}}{{end}}">
+  <label>Name <input name="name" value="{{.Item.Name}}" required></label>
+
+  <label>Category
+    <select name="category_id">
+      {{range .Categories}}
+      <option value="{{.ID}}" {{if eq .ID $.Item.CategoryID}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Appliance
+    <select name="appliance_id">
+      <option value="">-- none --</option>
+      {{range .Appliances}}
+      <option value="{{.ID}}" {{if eq .ID $.SelectedAppliance}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Season
+    <select name="season">
+      {{range .Seasons}}
+      <option value="{{.}}" {{if eq . $.Item.Season}}selected{{end}}>{{if .}}{{.}}{{else}}-- any --{{end}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Last serviced <input name="last_serviced" placeholder="YYYY-MM-DD" value="{{.LastServiced}}"></label>
+
+  <fieldset>
+    <legend>Schedule</legend>
+    <label class="radio-label">
+      <input type="radio" name="schedule_type" value="none" {{if eq .ScheduleType "none"}}checked{{end}}>
+      No fixed schedule
+    </label>
+    <label class="radio-label">
+      <input type="radio" name="schedule_type" value="interval" {{if eq .ScheduleType "interval"}}checked{{end}}>
+      Recurring interval (months): <input name="interval_months" value="{{.IntervalMonths}}">
+    </label>
+    <label class="radio-label">
+      <input type="radio" name="schedule_type" value="due_date" {{if eq .ScheduleType "due_date"}}checked{{end}}>
+      Fixed due date: <input name="due_date" placeholder="YYYY-MM-DD" value="{{.DueDate}}">
+    </label>
+  </fieldset>
+
+  <label>Manual URL <input name="manual_url" value="{{.Item.ManualURL}}"></label>
+  <label>Cost <input name="cost" value="{{.Cost}}"></label>
+  <label>Notes <textarea name="notes" rows="3">{{.Item.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/maintenance">Cancel</a>
+</form>
+{{end}}

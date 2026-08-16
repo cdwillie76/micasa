@@ -6,7 +6,6 @@ package webui
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 
 	"gorm.io/gorm"
@@ -189,13 +188,4 @@ func (s *Server) parseHouseForm(r *http.Request) (data.HouseProfile, error) {
 		HOAName:          strings.TrimSpace(r.FormValue("hoa_name")),
 		HOAFeeCents:      hoaFee,
 	}, nil
-}
-
-// formatOptionalInt renders a zero value as an empty string, matching how
-// the TUI's forms show unset numeric fields blank rather than "0".
-func formatOptionalInt(n int) string {
-	if n == 0 {
-		return ""
-	}
-	return strconv.Itoa(n)
 }

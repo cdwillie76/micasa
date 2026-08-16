@@ -1,0 +1,56 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>Maintenance</h1>
+  <a class="button" href="/maintenance/new">Add Maintenance Item</a>
+</div>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<p>
+  {{if .IncludeDeleted}}
+    <a href="/maintenance">Hide deleted</a>
+  {{else}}
+    <a href="/maintenance?deleted=1">Show deleted</a>
+  {{end}}
+</p>
+
+{{if .Items}}
+<table class="entity-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Season</th>
+      <th>Interval</th>
+      <th>Due Date</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Items}}
+    <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
+      <td>{{.Name}}</td>
+      <td>{{.Category.Name}}</td>
+      <td>{{.Season}}</td>
+      <td>{{if .IntervalMonths}}{{.IntervalMonths}} mo{{end}}</td>
+      <td>{{if .DueDate}}{{.DueDate.Format "Jan 2, 2006"}}{{end}}</td>
+      <td class="row-actions">
+        {{if .DeletedAt.Valid}}
+          <form method="post" action="/maintenance/{{.ID}}/restore">
+            <button type="submit">Restore</button>
+          </form>
+        {{else}}
+          <a href="/maintenance/{{.ID}}/edit">Edit</a>
+          <form method="post" action="/maintenance/{{.ID}}/delete">
+            <button type="submit" class="danger">Delete</button>
+          </form>
+        {{end}}
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="empty">No maintenance items yet.</p>
+{{end}}
+{{end}}

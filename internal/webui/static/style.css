@@ -134,6 +134,7 @@ form label {
 }
 
 form input,
+form select,
 form textarea {
   font-size: 1rem;
   font-family: inherit;
@@ -240,4 +241,19 @@ button[type="submit"] {
 .row-actions button.danger {
   color: var(--danger);
   border-color: var(--danger);
+}
+
+form .radio-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+form .radio-label input[type="radio"] {
+  width: auto;
+}
+
+form .radio-label input:not([type="radio"]) {
+  width: auto;
+  display: inline-block;
 }

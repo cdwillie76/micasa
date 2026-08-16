@@ -1,0 +1,34 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Project{{else}}Edit Project{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/projects{{else}}/projects/{{.Project.ID}}{{end}}">
+  <label>Title <input name="title" value="{{.Project.Title}}" required></label>
+
+  <label>Project type
+    <select name="project_type_id">
+      {{range .ProjectTypes}}
+      <option value="{{.ID}}" {{if eq .ID $.Project.ProjectTypeID}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Status
+    <select name="status">
+      {{range .Statuses}}
+      <option value="{{.}}" {{if eq . $.Project.Status}}selected{{end}}>{{.}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Description <textarea name="description" rows="3">{{.Project.Description}}</textarea></label>
+  <label>Start date <input name="start_date" placeholder="YYYY-MM-DD" value="{{.StartDate}}"></label>
+  <label>End date <input name="end_date" placeholder="YYYY-MM-DD" value="{{.EndDate}}"></label>
+  <label>Budget <input name="budget" value="{{.Budget}}"></label>
+  <label>Actual cost <input name="actual" value="{{.Actual}}"></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/projects">Cancel</a>
+</form>
+{{end}}

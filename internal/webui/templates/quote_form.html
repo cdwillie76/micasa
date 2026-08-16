@@ -1,0 +1,33 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Quote{{else}}Edit Quote{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/quotes{{else}}/quotes/{{.Quote.ID}}{{end}}">
+  <label>Project
+    <select name="project_id">
+      {{range .Projects}}
+      <option value="{{.ID}}" {{if eq .ID $.Quote.ProjectID}}selected{{end}}>{{.Title}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Vendor
+    <select name="vendor_id">
+      {{range .Vendors}}
+      <option value="{{.ID}}" {{if eq .ID $.Quote.VendorID}}selected{{end}}>{{.Name}}</option>
+      {{end}}
+    </select>
+  </label>
+
+  <label>Total <input name="total" value="{{.Total}}" required></label>
+  <label>Labor <input name="labor" value="{{.Labor}}"></label>
+  <label>Materials <input name="materials" value="{{.Materials}}"></label>
+  <label>Other <input name="other" value="{{.Other}}"></label>
+  <label>Received date <input name="received_date" placeholder="YYYY-MM-DD" value="{{.ReceivedDate}}"></label>
+  <label>Notes <textarea name="notes" rows="3">{{.Quote.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/quotes">Cancel</a>
+</form>
+{{end}}

@@ -1,0 +1,52 @@
+{{define "content"}}
+<div class="page-header">
+  <h1>Projects</h1>
+  <a class="button" href="/projects/new">Add Project</a>
+</div>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<p>
+  {{if .IncludeDeleted}}
+    <a href="/projects">Hide deleted</a>
+  {{else}}
+    <a href="/projects?deleted=1">Show deleted</a>
+  {{end}}
+</p>
+
+{{if .Projects}}
+<table class="entity-table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Status</th>
+      <th>Budget</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{range .Projects}}
+    <tr{{if .DeletedAt.Valid}} class="deleted-row"{{end}}>
+      <td>{{.Title}}</td>
+      <td><span class="tag">{{.Status}}</span></td>
+      <td>{{.Budget}}</td>
+      <td class="row-actions">
+        {{if .DeletedAt.Valid}}
+          <form method="post" action="/projects/{{.ID}}/restore">
+            <button type="submit">Restore</button>
+          </form>
+        {{else}}
+          <a href="/projects/{{.ID}}/edit">Edit</a>
+          <form method="post" action="/projects/{{.ID}}/delete">
+            <button type="submit" class="danger">Delete</button>
+          </form>
+        {{end}}
+      </td>
+    </tr>
+    {{end}}
+  </tbody>
+</table>
+{{else}}
+<p class="empty">No projects yet.</p>
+{{end}}
+{{end}}

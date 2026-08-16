@@ -1,0 +1,20 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Appliance{{else}}Edit Appliance{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/appliances{{else}}/appliances/{{.Appliance.ID}}{{end}}">
+  <label>Name <input name="name" value="{{.Appliance.Name}}" required></label>
+  <label>Brand <input name="brand" value="{{.Appliance.Brand}}"></label>
+  <label>Model number <input name="model_number" value="{{.Appliance.ModelNumber}}"></label>
+  <label>Serial number <input name="serial_number" value="{{.Appliance.SerialNumber}}"></label>
+  <label>Location <input name="location" value="{{.Appliance.Location}}"></label>
+  <label>Purchase date <input name="purchase_date" placeholder="YYYY-MM-DD" value="{{.PurchaseDate}}"></label>
+  <label>Warranty expiry <input name="warranty_expiry" placeholder="YYYY-MM-DD" value="{{.WarrantyExpiry}}"></label>
+  <label>Cost <input name="cost" value="{{.Cost}}"></label>
+  <label>Notes <textarea name="notes" rows="4">{{.Appliance.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/appliances">Cancel</a>
+</form>
+{{end}}
