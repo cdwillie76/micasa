@@ -1,0 +1,17 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Add Vendor{{else}}Edit Vendor{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="{{if .IsNew}}/vendors{{else}}/vendors/{{.Vendor.ID}}{{end}}">
+  <label>Name <input name="name" value="{{.Vendor.Name}}" required></label>
+  <label>Contact name <input name="contact_name" value="{{.Vendor.ContactName}}"></label>
+  <label>Email <input type="email" name="email" value="{{.Vendor.Email}}"></label>
+  <label>Phone <input name="phone" value="{{.Vendor.Phone}}"></label>
+  <label>Website <input name="website" value="{{.Vendor.Website}}"></label>
+  <label>Notes <textarea name="notes" rows="4">{{.Vendor.Notes}}</textarea></label>
+
+  <button type="submit">Save</button>
+  <a class="button-secondary" href="/vendors">Cancel</a>
+</form>
+{{end}}

@@ -29,7 +29,10 @@ func loadTemplates() (*templates, error) {
 		return nil, fmt.Errorf("read layout template: %w", err)
 	}
 
-	pageNames := []string{"dashboard.html", "house_view.html", "house_form.html"}
+	pageNames := []string{
+		"dashboard.html", "house_view.html", "house_form.html",
+		"vendor_list.html", "vendor_form.html",
+	}
 	pages := make(map[string]*template.Template, len(pageNames))
 	for _, name := range pageNames {
 		t, err := template.New("layout.html").Parse(string(layoutSrc))

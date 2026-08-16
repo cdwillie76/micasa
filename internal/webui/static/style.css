@@ -124,7 +124,7 @@ fieldset {
   margin-bottom: 1rem;
 }
 
-fieldset label {
+form label {
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
@@ -133,8 +133,10 @@ fieldset label {
   margin-bottom: 0.6rem;
 }
 
-fieldset input {
+form input,
+form textarea {
   font-size: 1rem;
+  font-family: inherit;
   padding: 0.35rem 0.5rem;
   border: 1px solid var(--border);
   border-radius: 0.3rem;
@@ -155,4 +157,87 @@ button[type="submit"] {
 .error {
   color: var(--danger);
   font-weight: 600;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.button,
+.button-secondary {
+  display: inline-block;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+}
+
+.button-secondary {
+  color: var(--muted);
+  border: 1px solid var(--border);
+  margin-left: 0.5rem;
+}
+
+.entity-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.entity-table th,
+.entity-table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.entity-table th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.entity-table .deleted-row {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  white-space: nowrap;
+}
+
+.row-actions form {
+  display: inline;
+  margin: 0;
+}
+
+.row-actions button {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.row-actions button.danger {
+  color: var(--danger);
+  border-color: var(--danger);
 }

@@ -56,6 +56,14 @@ func (s *Server) routes() {
 	mux.HandleFunc("GET /house/edit", s.handleHouseEditForm)
 	mux.HandleFunc("POST /house", s.handleHouseSubmit)
 
+	mux.HandleFunc("GET /vendors", s.handleVendorList)
+	mux.HandleFunc("GET /vendors/new", s.handleVendorNewForm)
+	mux.HandleFunc("POST /vendors", s.handleVendorCreate)
+	mux.HandleFunc("GET /vendors/{id}/edit", s.handleVendorEditForm)
+	mux.HandleFunc("POST /vendors/{id}", s.handleVendorUpdate)
+	mux.HandleFunc("POST /vendors/{id}/delete", s.handleVendorDelete)
+	mux.HandleFunc("POST /vendors/{id}/restore", s.handleVendorRestore)
+
 	s.mux = mux
 }
 
