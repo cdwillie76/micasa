@@ -1,0 +1,49 @@
+{{define "content"}}
+<h1>{{if .IsNew}}Set Up Your House{{else}}Edit House{{end}}</h1>
+
+{{if .Error}}<p class="error">{{.Error}}</p>{{end}}
+
+<form method="post" action="/house">
+  <fieldset>
+    <legend>Basics</legend>
+    <label>Nickname <input name="nickname" value="{{.House.Nickname}}"></label>
+    <label>Address line 1 <input name="address_line1" value="{{.House.AddressLine1}}"></label>
+    <label>Address line 2 <input name="address_line2" value="{{.House.AddressLine2}}"></label>
+    <label>City <input name="city" value="{{.House.City}}"></label>
+    <label>State <input name="state" value="{{.House.State}}"></label>
+    <label>Postal code <input name="postal_code" value="{{.House.PostalCode}}"></label>
+    <label>Year built <input name="year_built" value="{{if .House.YearBuilt}}{{.House.YearBuilt}}{{end}}"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Structure</legend>
+    <label>{{.AreaTitle}} <input name="square_feet" value="{{.AreaInput}}"></label>
+    <label>{{.LotTitle}} <input name="lot_square_feet" value="{{.LotInput}}"></label>
+    <label>Bedrooms <input name="bedrooms" value="{{if .House.Bedrooms}}{{.House.Bedrooms}}{{end}}"></label>
+    <label>Bathrooms <input name="bathrooms" value="{{if .House.Bathrooms}}{{.House.Bathrooms}}{{end}}"></label>
+    <label>Foundation <input name="foundation_type" value="{{.House.FoundationType}}"></label>
+    <label>Wiring <input name="wiring_type" value="{{.House.WiringType}}"></label>
+    <label>Roof <input name="roof_type" value="{{.House.RoofType}}"></label>
+    <label>Exterior <input name="exterior_type" value="{{.House.ExteriorType}}"></label>
+    <label>Heating <input name="heating_type" value="{{.House.HeatingType}}"></label>
+    <label>Cooling <input name="cooling_type" value="{{.House.CoolingType}}"></label>
+    <label>Water source <input name="water_source" value="{{.House.WaterSource}}"></label>
+    <label>Sewer <input name="sewer_type" value="{{.House.SewerType}}"></label>
+    <label>Parking <input name="parking_type" value="{{.House.ParkingType}}"></label>
+    <label>Basement <input name="basement_type" value="{{.House.BasementType}}"></label>
+  </fieldset>
+
+  <fieldset>
+    <legend>Insurance &amp; HOA</legend>
+    <label>Insurance carrier <input name="insurance_carrier" value="{{.House.InsuranceCarrier}}"></label>
+    <label>Insurance policy <input name="insurance_policy" value="{{.House.InsurancePolicy}}"></label>
+    <label>Insurance renewal <input name="insurance_renewal" placeholder="YYYY-MM-DD"
+      value="{{if .House.InsuranceRenewal}}{{.House.InsuranceRenewal.Format "2006-01-02"}}{{end}}"></label>
+    <label>Property tax <input name="property_tax" value="{{.TaxInput}}"></label>
+    <label>HOA name <input name="hoa_name" value="{{.House.HOAName}}"></label>
+    <label>HOA fee <input name="hoa_fee" value="{{.HOAFeeInput}}"></label>
+  </fieldset>
+
+  <button type="submit">Save</button>
+</form>
+{{end}}

@@ -1,0 +1,21 @@
+{{define "content"}}
+<h1>{{if .House.Nickname}}{{.House.Nickname}}{{else}}House Profile{{end}}</h1>
+<p><a href="/house/edit">Edit</a></p>
+
+<dl class="detail">
+  <dt>Address</dt>
+  <dd>{{.House.AddressLine1}}{{if .House.AddressLine2}}, {{.House.AddressLine2}}{{end}}
+    {{if .House.City}}, {{.House.City}}{{end}}{{if .House.State}}, {{.House.State}}{{end}} {{.House.PostalCode}}</dd>
+
+  {{if .House.YearBuilt}}<dt>Year Built</dt><dd>{{.House.YearBuilt}}</dd>{{end}}
+  {{if .Area}}<dt>Area</dt><dd>{{.Area}}</dd>{{end}}
+  {{if .Lot}}<dt>Lot</dt><dd>{{.Lot}}</dd>{{end}}
+  {{if .House.Bedrooms}}<dt>Bedrooms</dt><dd>{{.House.Bedrooms}}</dd>{{end}}
+  {{if .House.Bathrooms}}<dt>Bathrooms</dt><dd>{{.House.Bathrooms}}</dd>{{end}}
+  {{if .House.RoofType}}<dt>Roof</dt><dd>{{.House.RoofType}}</dd>{{end}}
+  {{if .House.HeatingType}}<dt>Heating</dt><dd>{{.House.HeatingType}}</dd>{{end}}
+  {{if .House.CoolingType}}<dt>Cooling</dt><dd>{{.House.CoolingType}}</dd>{{end}}
+  {{if .House.InsuranceCarrier}}<dt>Insurance</dt><dd>{{.House.InsuranceCarrier}}</dd>{{end}}
+  {{if .House.HOAName}}<dt>HOA</dt><dd>{{.House.HOAName}}</dd>{{end}}
+</dl>
+{{end}}

@@ -81,6 +81,7 @@ func newRootCmd() *cobra.Command {
 		newDBCmd(),
 		newStatusCmd(),
 		newEvalCmd(),
+		newWebCmd(),
 	)
 
 	return root

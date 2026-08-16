@@ -1,0 +1,67 @@
+{{define "content"}}
+<h1>Dashboard</h1>
+
+<section class="stats">
+  <div class="stat"><span class="stat-label">YTD service spend</span><span class="stat-value">{{.YTDServiceSpend}}</span></div>
+  <div class="stat"><span class="stat-label">Total project spend</span><span class="stat-value">{{.TotalProjectSpend}}</span></div>
+</section>
+
+{{if .OpenIncidents}}
+<section>
+  <h2>Open Incidents</h2>
+  <ul class="dash-list">
+    {{range .OpenIncidents}}
+    <li><strong>{{.Title}}</strong> <span class="tag">{{.Severity}}</span> <span class="tag">{{.Status}}</span></li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if .Overdue}}
+<section>
+  <h2>Overdue Maintenance</h2>
+  <ul class="dash-list">
+    {{range .Overdue}}
+    <li><strong>{{.Item.Name}}</strong> <span class="days-overdue">{{.NextDue.Format "Jan 2, 2006"}}</span></li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if .Upcoming}}
+<section>
+  <h2>Upcoming Maintenance</h2>
+  <ul class="dash-list">
+    {{range .Upcoming}}
+    <li><strong>{{.Item.Name}}</strong> <span>{{.NextDue.Format "Jan 2, 2006"}}</span></li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if .ActiveProjects}}
+<section>
+  <h2>Active Projects</h2>
+  <ul class="dash-list">
+    {{range .ActiveProjects}}
+    <li><strong>{{.Title}}</strong> <span class="tag">{{.Status}}</span></li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if .ExpiringWarranties}}
+<section>
+  <h2>Warranties Expiring Soon</h2>
+  <ul class="dash-list">
+    {{range .ExpiringWarranties}}
+    <li><strong>{{.Appliance.Name}}</strong></li>
+    {{end}}
+  </ul>
+</section>
+{{end}}
+
+{{if and (not .OpenIncidents) (not .Overdue) (not .Upcoming) (not .ActiveProjects) (not .ExpiringWarranties)}}
+<p class="empty">Nothing needs attention.</p>
+{{end}}
+{{end}}

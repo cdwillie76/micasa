@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{if .Title}}{{.Title}} - {{end}}micasa</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">micasa</a>
+    <nav>
+      <a href="/" {{if eq .Nav "dashboard"}}class="active"{{end}}>Dashboard</a>
+      <a href="/house" {{if eq .Nav "house"}}class="active"{{end}}>House</a>
+    </nav>
+  </header>
+  <main>
+    {{template "content" .}}
+  </main>
+</body>
+</html>
