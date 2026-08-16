@@ -15,6 +15,7 @@
 </p>
 
 {{if .Incidents}}
+<div class="table-scroll">
 <table class="entity-table">
   <thead>
     <tr>
@@ -39,7 +40,7 @@
           </form>
         {{else}}
           <a href="/incidents/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/incidents/{{.ID}}/delete">
+          <form method="post" action="/incidents/{{.ID}}/delete" onsubmit="return confirm('Delete {{.Title}}? You can restore it later from &quot;Show deleted&quot;.')">
             <button type="submit" class="danger">Delete</button>
           </form>
         {{end}}
@@ -48,6 +49,7 @@
     {{end}}
   </tbody>
 </table>
+</div>
 {{else}}
 <p class="empty">No incidents yet.</p>
 {{end}}

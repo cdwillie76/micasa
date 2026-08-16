@@ -173,12 +173,11 @@ func (s *Server) handleDocumentList(w http.ResponseWriter, r *http.Request) {
 	}
 	rows := make([]documentRow, len(docs))
 	for i, d := range docs {
+		size := uint64(d.SizeBytes) //nolint:gosec // SizeBytes is always non-negative
 		rows[i] = documentRow{
 			Document:    d,
 			EntityLabel: labels[entityOptionKey(d.EntityKind, d.EntityID)],
-			Size: humanize.IBytes(
-				uint64(d.SizeBytes),
-			), //nolint:gosec // SizeBytes is always non-negative
+			Size:        humanize.IBytes(size),
 		}
 	}
 	s.render(w, http.StatusOK, "document_list.html", documentListPageData{
@@ -321,9 +320,8 @@ func (s *Server) handleDocumentCreate(w http.ResponseWriter, r *http.Request) {
 	// Body is already bounded by MaxBytesReader above, so the 32 MiB memory
 	// threshold here only controls the in-memory/disk-spill split, not the
 	// overall request size.
-	if err := r.ParseMultipartForm(
-		32 << 20,
-	); err != nil { //nolint:gosec // body size is bounded above
+	parseErr := r.ParseMultipartForm(32 << 20) //nolint:gosec // body size is bounded above
+	if parseErr != nil {
 		http.Error(w, "file is too large or the form is invalid", http.StatusBadRequest)
 		return
 	}
@@ -383,9 +381,8 @@ func (s *Server) handleDocumentUpdate(w http.ResponseWriter, r *http.Request) {
 	// Body is already bounded by MaxBytesReader above, so the 32 MiB memory
 	// threshold here only controls the in-memory/disk-spill split, not the
 	// overall request size.
-	if err := r.ParseMultipartForm(
-		32 << 20,
-	); err != nil { //nolint:gosec // body size is bounded above
+	parseErr := r.ParseMultipartForm(32 << 20) //nolint:gosec // body size is bounded above
+	if parseErr != nil {
 		http.Error(w, "file is too large or the form is invalid", http.StatusBadRequest)
 		return
 	}

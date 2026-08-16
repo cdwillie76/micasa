@@ -15,6 +15,7 @@
 </p>
 
 {{if .Entries}}
+<div class="table-scroll">
 <table class="entity-table">
   <thead>
     <tr>
@@ -37,7 +38,7 @@
           </form>
         {{else}}
           <a href="/service-logs/{{.ID}}/edit">Edit</a>
-          <form method="post" action="/service-logs/{{.ID}}/delete">
+          <form method="post" action="/service-logs/{{.ID}}/delete" onsubmit="return confirm('Delete this service log entry for {{.MaintenanceItem.Name}}? You can restore it later from &quot;Show deleted&quot;.')">
             <button type="submit" class="danger">Delete</button>
           </form>
         {{end}}
@@ -46,6 +47,7 @@
     {{end}}
   </tbody>
 </table>
+</div>
 {{else}}
 <p class="empty">No service log entries yet.</p>
 {{end}}
