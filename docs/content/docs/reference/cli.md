@@ -41,6 +41,7 @@ micasa [database-path] [flags]
 - [`micasa query`](#micasa-query): Run a read-only SQL query
 - [`micasa show`](#micasa-show): Display data as text or JSON
 - [`micasa status`](#micasa-status): Show overdue items, open incidents, and active projects
+- [`micasa web`](#micasa-web): Launch a local browser-based UI
 
 ## micasa backup
 
@@ -2037,6 +2038,28 @@ micasa status [database-path] [flags]
 | `--days` | `30` | Look-ahead window for upcoming items (1-365) |
 | `-h`, `--help` | - | help for status |
 | `--json` | - | Output JSON instead of human-readable text |
+
+### See also
+
+- [`micasa`](#micasa): A terminal UI for tracking everything about your home
+
+## micasa web
+
+Launch a local HTTP server serving a browser-based UI against the same database the TUI uses. Binds to localhost by default.
+
+### Usage
+
+```
+micasa web [database-path] [flags]
+```
+
+### Flags
+
+| Flag | Default | Description |
+|------|---------|-------------|
+| `--addr` | `127.0.0.1:8734` | Address to listen on |
+| `-h`, `--help` | - | help for web |
+| `--open` | `true` | Open the default browser after starting |
 
 ### See also
 
