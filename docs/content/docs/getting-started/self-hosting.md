@@ -8,6 +8,16 @@ linkTitle = "Self-Hosting"
 micasa syncs your household data across machines through an encrypted
 relay. Run your own with [Docker Compose](https://docs.docker.com/compose/).
 
+> **Note:** This page is about the sync relay, not `micasa web` (the local
+> browser UI). They're unrelated: `micasa web` opens a server on the
+> machine it runs on, straight against that machine's own database file,
+> with no authentication -- it binds to `127.0.0.1` by default for exactly
+> this reason. It is not a shared, multi-user interface, and running it
+> with `--addr 0.0.0.0:8734` on a server (this one included) would expose
+> an unauthenticated admin UI to your network. If you want browser access
+> from multiple household members, sync each person's device via the relay
+> below and have them run `micasa web` locally on their own machine.
+
 ## What you need
 
 - A machine with [Docker](https://docs.docker.com/get-docker/) and
