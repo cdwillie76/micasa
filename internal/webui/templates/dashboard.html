@@ -1,4 +1,9 @@
 {{define "content"}}
+<div class="house-header">
+  <a class="house-pill" href="/house">{{.HousePill}}</a>
+  <span class="house-summary">{{.HouseSummary}}</span>
+</div>
+
 <h1>Dashboard</h1>
 
 <section class="stats">
@@ -7,57 +12,128 @@
 </section>
 
 {{if .OpenIncidents}}
-<section>
+<section class="dash-section">
   <h2>Open Incidents</h2>
-  <ul class="dash-list">
-    {{range .OpenIncidents}}
-    <li><strong>{{.Title}}</strong> <span class="tag">{{.Severity}}</span> <span class="tag">{{.Status}}</span></li>
-    {{end}}
-  </ul>
+  <div class="table-scroll">
+    <table class="entity-table sortable">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Severity</th>
+          <th>Status</th>
+          <th>Reported</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .OpenIncidents}}
+        <tr>
+          <td><a href="/incidents/{{.ID}}/edit">{{.Title}}</a></td>
+          <td><span class="tag">{{.Severity}}</span></td>
+          <td><span class="tag">{{.Status}}</span></td>
+          <td>{{.DateNoticed.Format "2006-01-02"}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </section>
 {{end}}
 
 {{if .Overdue}}
-<section>
+<section class="dash-section">
   <h2>Overdue Maintenance</h2>
-  <ul class="dash-list">
-    {{range .Overdue}}
-    <li><strong>{{.Item.Name}}</strong> <span class="days-overdue">{{.NextDue.Format "Jan 2, 2006"}}</span></li>
-    {{end}}
-  </ul>
+  <div class="table-scroll">
+    <table class="entity-table sortable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Due</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Overdue}}
+        <tr>
+          <td><a href="/maintenance/{{.Item.ID}}/edit">{{.Item.Name}}</a></td>
+          <td class="text-danger">{{.NextDue.Format "2006-01-02"}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </section>
 {{end}}
 
 {{if .Upcoming}}
-<section>
+<section class="dash-section">
   <h2>Upcoming Maintenance</h2>
-  <ul class="dash-list">
-    {{range .Upcoming}}
-    <li><strong>{{.Item.Name}}</strong> <span>{{.NextDue.Format "Jan 2, 2006"}}</span></li>
-    {{end}}
-  </ul>
+  <div class="table-scroll">
+    <table class="entity-table sortable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Due</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Upcoming}}
+        <tr>
+          <td><a href="/maintenance/{{.Item.ID}}/edit">{{.Item.Name}}</a></td>
+          <td>{{.NextDue.Format "2006-01-02"}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </section>
 {{end}}
 
 {{if .ActiveProjects}}
-<section>
+<section class="dash-section">
   <h2>Active Projects</h2>
-  <ul class="dash-list">
-    {{range .ActiveProjects}}
-    <li><strong>{{.Title}}</strong> <span class="tag">{{.Status}}</span></li>
-    {{end}}
-  </ul>
+  <div class="table-scroll">
+    <table class="entity-table sortable">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Status</th>
+          <th>Started</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .ActiveProjects}}
+        <tr>
+          <td><a href="/projects/{{.ID}}/edit">{{.Title}}</a></td>
+          <td><span class="tag">{{.Status}}</span></td>
+          <td>{{if .StartDate}}{{.StartDate.Format "2006-01-02"}}{{end}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </section>
 {{end}}
 
 {{if .ExpiringWarranties}}
-<section>
+<section class="dash-section">
   <h2>Warranties Expiring Soon</h2>
-  <ul class="dash-list">
-    {{range .ExpiringWarranties}}
-    <li><strong>{{.Appliance.Name}}</strong></li>
-    {{end}}
-  </ul>
+  <div class="table-scroll">
+    <table class="entity-table sortable">
+      <thead>
+        <tr>
+          <th>Appliance</th>
+          <th>Expires</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .ExpiringWarranties}}
+        <tr>
+          <td><a href="/appliances/{{.Appliance.ID}}/edit">{{.Appliance.Name}}</a></td>
+          <td>{{if .Appliance.WarrantyExpiry}}{{.Appliance.WarrantyExpiry.Format "2006-01-02"}}{{end}}</td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
 </section>
 {{end}}
 

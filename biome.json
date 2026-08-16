@@ -4,6 +4,8 @@
 			"docs/static/css/*.css",
 			"docs/static/js/*.js",
 			"docs/data/*.json",
+			"internal/webui/static/*.css",
+			"internal/webui/static/*.js",
 			"*.js",
 			"*.json"
 		]

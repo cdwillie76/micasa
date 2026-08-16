@@ -6,8 +6,11 @@ package webui
 import (
 	"errors"
 	"fmt"
+	"math"
 	"net/http"
 	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -23,6 +26,8 @@ import (
 type dashboardPageData struct {
 	pageData
 
+	HousePill          string
+	HouseSummary       string
 	Overdue            []maintenanceUrgency
 	Upcoming           []maintenanceUrgency
 	ActiveProjects     []data.Project
@@ -31,6 +36,64 @@ type dashboardPageData struct {
 	YTDServiceSpend    string
 	TotalProjectSpend  string
 	Currency           string
+}
+
+// houseSummaryLine mirrors internal/app/house.go's houseCollapsed layout
+// (address · city, state · Nbd/Nba · area · year), joined with " . "
+// instead of lipgloss styling, so the web dashboard's house strip reads
+// the same as the TUI's collapsed house header.
+func houseSummaryLine(house data.HouseProfile, units data.UnitSystem) string {
+	var parts []string
+	if addr := strings.TrimSpace(house.AddressLine1); addr != "" {
+		parts = append(parts, addr)
+	}
+	if cs := formatCityState(house); cs != "" {
+		parts = append(parts, cs)
+	}
+	if bb := formatBedBath(house); bb != "" {
+		parts = append(parts, bb)
+	}
+	if area := data.FormatArea(house.SquareFeet, units); area != "" {
+		parts = append(parts, area)
+	}
+	if house.YearBuilt > 0 {
+		parts = append(parts, strconv.Itoa(house.YearBuilt))
+	}
+	return strings.Join(parts, " · ")
+}
+
+func formatCityState(house data.HouseProfile) string {
+	city := strings.TrimSpace(house.City)
+	state := strings.TrimSpace(house.State)
+	switch {
+	case city != "" && state != "":
+		return city + ", " + state
+	case city != "":
+		return city
+	default:
+		return state
+	}
+}
+
+func formatBedBath(house data.HouseProfile) string {
+	var parts []string
+	if house.Bedrooms > 0 {
+		parts = append(parts, strconv.Itoa(house.Bedrooms)+"bd")
+	}
+	if house.Bathrooms > 0 {
+		parts = append(parts, formatFloatTrim(house.Bathrooms)+"ba")
+	}
+	return strings.Join(parts, " / ")
+}
+
+// formatFloatTrim renders a whole number without a decimal point (4 not
+// 4.0) and everything else to one decimal place, matching the TUI's
+// formatFloat in internal/app/house.go.
+func formatFloatTrim(v float64) string {
+	if v == math.Trunc(v) {
+		return strconv.FormatFloat(v, 'f', 0, 64)
+	}
+	return strconv.FormatFloat(v, 'f', 1, 64)
 }
 
 type maintenanceUrgency struct {
@@ -60,7 +123,8 @@ func daysUntil(now, target time.Time) int {
 }
 
 func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
-	if _, err := s.store.HouseProfile(); err != nil {
+	house, err := s.store.HouseProfile()
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			http.Redirect(w, r, "/house/edit", http.StatusSeeOther)
 			return
@@ -70,9 +134,15 @@ func (s *Server) handleDashboard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	now := time.Now()
+	housePill := house.Nickname
+	if housePill == "" {
+		housePill = "House"
+	}
 	page := dashboardPageData{
-		pageData: pageData{Title: "Dashboard", Nav: "dashboard"},
-		Currency: s.cur.Code(),
+		pageData:     pageData{Title: "Dashboard", Nav: "dashboard"},
+		Currency:     s.cur.Code(),
+		HousePill:    housePill,
+		HouseSummary: houseSummaryLine(house, s.units),
 	}
 
 	items, err := s.store.ListMaintenanceWithSchedule()

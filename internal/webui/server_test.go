@@ -133,6 +133,34 @@ func TestHandleDashboard_RendersEmptyStateWithHouse(t *testing.T) {
 	require.Contains(t, rec.Body.String(), "Nothing needs attention")
 }
 
+func TestHandleDashboard_RendersHouseHeader(t *testing.T) {
+	srv := newTestServer(t)
+	require.NoError(t, srv.store.CreateHouseProfile(data.HouseProfile{
+		Nickname: "The Homestead", AddressLine1: "123 Main St", City: "Springfield",
+		State: "IL", Bedrooms: 3, Bathrooms: 2.5, SquareFeet: 1800, YearBuilt: 1998,
+	}))
+
+	rec := do(t, srv, http.MethodGet, "/", nil)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+	body := rec.Body.String()
+	require.Contains(t, body, `<a class="house-pill" href="/house">The Homestead</a>`)
+	require.Contains(
+		t, body,
+		"123 Main St · Springfield, IL · 3bd / 2.5ba · 1,800 ft² · 1998",
+	)
+}
+
+func TestHandleDashboard_HousePillFallsBackToHouseWhenNoNickname(t *testing.T) {
+	srv := newTestServer(t)
+	require.NoError(t, srv.store.CreateHouseProfile(data.HouseProfile{City: "Springfield"}))
+
+	rec := do(t, srv, http.MethodGet, "/", nil)
+
+	require.Equal(t, http.StatusOK, rec.Code)
+	require.Contains(t, rec.Body.String(), `<a class="house-pill" href="/house">House</a>`)
+}
+
 func TestHandleHouseView_RedirectsToEditWhenNoHouse(t *testing.T) {
 	srv := newTestServer(t)
 
@@ -230,10 +258,12 @@ func TestHandleDashboard_RendersOverdueAndUpcomingMaintenance(t *testing.T) {
 	require.NotEmpty(t, cats)
 	categoryID := cats[0].ID
 
+	overdueItem := data.MaintenanceItem{
+		Name: "Overdue Gutter Cleaning", CategoryID: categoryID,
+	}
 	overdueDue := time.Now().AddDate(0, 0, -30)
-	require.NoError(t, srv.store.CreateMaintenance(&data.MaintenanceItem{
-		Name: "Overdue Gutter Cleaning", CategoryID: categoryID, DueDate: &overdueDue,
-	}))
+	overdueItem.DueDate = &overdueDue
+	require.NoError(t, srv.store.CreateMaintenance(&overdueItem))
 
 	upcomingDue := time.Now().AddDate(0, 0, 10)
 	require.NoError(t, srv.store.CreateMaintenance(&data.MaintenanceItem{
@@ -243,9 +273,16 @@ func TestHandleDashboard_RendersOverdueAndUpcomingMaintenance(t *testing.T) {
 	rec := do(t, srv, http.MethodGet, "/", nil)
 
 	require.Equal(t, http.StatusOK, rec.Code)
-	require.Contains(t, rec.Body.String(), "Overdue Gutter Cleaning")
-	require.Contains(t, rec.Body.String(), "Upcoming Filter Change")
-	require.NotContains(t, rec.Body.String(), "Nothing needs attention")
+	body := rec.Body.String()
+	require.Contains(t, body, "Overdue Gutter Cleaning")
+	require.Contains(t, body, "Upcoming Filter Change")
+	require.NotContains(t, body, "Nothing needs attention")
+	require.Contains(
+		t, body,
+		`<a href="/maintenance/`+overdueItem.ID+`/edit">Overdue Gutter Cleaning</a>`,
+		"dashboard rows must drill down to the item's edit page",
+	)
+	require.Contains(t, body, `<table class="entity-table sortable">`)
 }
 
 func TestHandleDashboard_StoreErrorRendersServerError(t *testing.T) {
